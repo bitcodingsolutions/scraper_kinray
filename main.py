@@ -164,7 +164,11 @@ def login_session():
         #             break
         #     except:
         #         pass
-
+        #
+        # driver.quit()
+        #
+        # print("access_token : ",access_token)
+        # print("x_api_key : ",x_api_key)
         access_token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW5kYWRpckBhb2wuY29tIiwibG9naW4iOiJTYW5kYWRpckBhb2wuY29tIiwiZW1haWxJZCI6IlNhbmRhZGlyQGFvbC5jb20iLCJleHBpcmVkQXQiOjE2NTE5NDgzNDQzNDYsIm9rdGFJZCI6IjAwdWo3bWN0Y2tOcENtZWV4MXQ3IiwiZXhwIjoxNjUxOTQ4MzQ0MzQ2LCJidUlkIjozLCJ1c2VyVHlwZSI6ODAzLCJ1c2VyRGV0YWlsTnVtIjo0NjQ1OH0.C63nJ6LV1fwD1lv9ZDYSD6JSvrfZUIvKSyQ1zN7wiKg'
         x_api_key = 'Ggcj9yiWoNY2AWzWAZUNqcJ0miMbGkey'
 
@@ -252,4 +256,5 @@ def start():
         print("Waiting for 3 Hours to start Scrapping again")
         time.sleep(10800)
 
-start()
+if __name__ == '__main__':
+    start()

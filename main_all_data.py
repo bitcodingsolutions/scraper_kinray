@@ -90,51 +90,55 @@ def login_session():
         account_num = json_data["accounts"][0]["accountNum"]
         print("account_num : ", account_num)
     except:
-        # driver = chrome_driver()
-        #
-        # driver.get("https://kinrayweblink.cardinalhealth.com/login")
-        # current_handle = driver.current_window_handle
-        # for handle in driver.window_handles:
-        #     if handle != current_handle:
-        #         driver.switch_to.window(handle)
-        #         driver.close()
-        #
-        # driver.switch_to.window(current_handle)
-        #
-        # input_username = WebDriverWait(driver, 50).until(
-        #     EC.presence_of_element_located((By.ID, "okta-signin-username"))
-        # )
-        # print("login() -> loginName found ")
-        # input_password = WebDriverWait(driver, 50).until(
-        #     EC.presence_of_element_located((By.ID, "okta-signin-password"))
-        # )
-        # print("login() -> password found ")
-        #
-        # input_username.send_keys(email)
-        # input_password.send_keys(password, Keys.ENTER)
-        #
-        # while True:
-        #     if driver.current_url == "https://kinrayweblink.cardinalhealth.com/home":
-        #         break
-        #     else:
-        #         time.sleep(1)
-        #
-        #
-        # browser_log = driver.get_log('performance')
-        # access_token = ''
-        # x_api_key = ''
-        # for entry in browser_log:
-        #     try:
-        #         json_request = json.loads(entry["message"])
-        #         access_token = json_request['message']['params']['headers']['access-token']
-        #         x_api_key = json_request['message']['params']['headers']['x-api-key']
-        #         if access_token and x_api_key:
-        #             break
-        #     except:
-        #         pass
+        driver = chrome_driver()
 
-        access_token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW5kYWRpckBhb2wuY29tIiwibG9naW4iOiJTYW5kYWRpckBhb2wuY29tIiwiZW1haWxJZCI6IlNhbmRhZGlyQGFvbC5jb20iLCJleHBpcmVkQXQiOjE2NTE5NDgzNDQzNDYsIm9rdGFJZCI6IjAwdWo3bWN0Y2tOcENtZWV4MXQ3IiwiZXhwIjoxNjUxOTQ4MzQ0MzQ2LCJidUlkIjozLCJ1c2VyVHlwZSI6ODAzLCJ1c2VyRGV0YWlsTnVtIjo0NjQ1OH0.C63nJ6LV1fwD1lv9ZDYSD6JSvrfZUIvKSyQ1zN7wiKg'
-        x_api_key = 'Ggcj9yiWoNY2AWzWAZUNqcJ0miMbGkey'
+        driver.get("https://kinrayweblink.cardinalhealth.com/login")
+        current_handle = driver.current_window_handle
+        for handle in driver.window_handles:
+            if handle != current_handle:
+                driver.switch_to.window(handle)
+                driver.close()
+
+        driver.switch_to.window(current_handle)
+
+        input_username = WebDriverWait(driver, 50).until(
+            EC.presence_of_element_located((By.ID, "okta-signin-username"))
+        )
+        print("login() -> loginName found ")
+        input_password = WebDriverWait(driver, 50).until(
+            EC.presence_of_element_located((By.ID, "okta-signin-password"))
+        )
+        print("login() -> password found ")
+
+        input_username.send_keys(email)
+        input_password.send_keys(password, Keys.ENTER)
+
+        while True:
+            if driver.current_url == "https://kinrayweblink.cardinalhealth.com/home":
+                break
+            else:
+                time.sleep(1)
+
+
+        browser_log = driver.get_log('performance')
+        access_token = ''
+        x_api_key = ''
+        for entry in browser_log:
+            try:
+                json_request = json.loads(entry["message"])
+                access_token = json_request['message']['params']['headers']['access-token']
+                x_api_key = json_request['message']['params']['headers']['x-api-key']
+                if access_token and x_api_key:
+                    break
+            except:
+                pass
+
+        driver.quit()
+
+        print("access_token : ",access_token)
+        print("x_api_key : ",x_api_key)
+        # access_token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW5kYWRpckBhb2wuY29tIiwibG9naW4iOiJTYW5kYWRpckBhb2wuY29tIiwiZW1haWxJZCI6IlNhbmRhZGlyQGFvbC5jb20iLCJleHBpcmVkQXQiOjE2NTE5NDgzNDQzNDYsIm9rdGFJZCI6IjAwdWo3bWN0Y2tOcENtZWV4MXQ3IiwiZXhwIjoxNjUxOTQ4MzQ0MzQ2LCJidUlkIjozLCJ1c2VyVHlwZSI6ODAzLCJ1c2VyRGV0YWlsTnVtIjo0NjQ1OH0.C63nJ6LV1fwD1lv9ZDYSD6JSvrfZUIvKSyQ1zN7wiKg'
+        # x_api_key = 'Ggcj9yiWoNY2AWzWAZUNqcJ0miMbGkey'
 
         session.headers.update({'Accept': 'application/json'})
         session.headers.update({'Content-Type': 'application/json'})
@@ -246,6 +250,5 @@ def start():
             executor.submit(get_data_from_category,[category])
 
 
-
-
-start()
+if __name__ == '__main__':
+    start()

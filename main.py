@@ -35,6 +35,8 @@ result_file_name = output_file_name + "_" + str(datetime.datetime.now().timestam
 
 
 thread_pool = 100
+max_retry = 10
+
 
 driver = None
 session = requests.session()
@@ -117,83 +119,87 @@ def login_session():
     global driver
 
     try:
-        response = session.get("https://api.cardinalhealth.com/pharmcon/kinray-exp/user/detail")
+        response = session.get("https://api.cardinalhealth.com/pharmcon/kinray-exp/user/detail", timeout=10)
         json_data = response.json()
         account_num = json_data["accounts"][0]["accountNum"]
         print("account_num : ", account_num)
     except:
-        # driver = chrome_driver()
-        #
-        # driver.get("https://kinrayweblink.cardinalhealth.com/login")
-        # current_handle = driver.current_window_handle
-        # for handle in driver.window_handles:
-        #     if handle != current_handle:
-        #         driver.switch_to.window(handle)
-        #         driver.close()
-        #
-        # driver.switch_to.window(current_handle)
-        #
-        # input_username = WebDriverWait(driver, 50).until(
-        #     EC.presence_of_element_located((By.ID, "okta-signin-username"))
-        # )
-        # print("login() -> loginName found ")
-        # input_password = WebDriverWait(driver, 50).until(
-        #     EC.presence_of_element_located((By.ID, "okta-signin-password"))
-        # )
-        # print("login() -> password found ")
-        #
-        # input_username.send_keys(email)
-        # input_password.send_keys(password, Keys.ENTER)
-        #
-        # while True:
-        #     if driver.current_url == "https://kinrayweblink.cardinalhealth.com/home":
-        #         break
-        #     else:
-        #         time.sleep(1)
-        #
-        #
-        # browser_log = driver.get_log('performance')
-        # access_token = ''
-        # x_api_key = ''
-        # for entry in browser_log:
-        #     try:
-        #         json_request = json.loads(entry["message"])
-        #         access_token = json_request['message']['params']['headers']['access-token']
-        #         x_api_key = json_request['message']['params']['headers']['x-api-key']
-        #         if access_token and x_api_key:
-        #             break
-        #     except:
-        #         pass
-        #
-        # driver.quit()
-        #
-        # print("access_token : ",access_token)
-        # print("x_api_key : ",x_api_key)
-        access_token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW5kYWRpckBhb2wuY29tIiwibG9naW4iOiJTYW5kYWRpckBhb2wuY29tIiwiZW1haWxJZCI6IlNhbmRhZGlyQGFvbC5jb20iLCJleHBpcmVkQXQiOjE2NTE5NDgzNDQzNDYsIm9rdGFJZCI6IjAwdWo3bWN0Y2tOcENtZWV4MXQ3IiwiZXhwIjoxNjUxOTQ4MzQ0MzQ2LCJidUlkIjozLCJ1c2VyVHlwZSI6ODAzLCJ1c2VyRGV0YWlsTnVtIjo0NjQ1OH0.C63nJ6LV1fwD1lv9ZDYSD6JSvrfZUIvKSyQ1zN7wiKg'
-        x_api_key = 'Ggcj9yiWoNY2AWzWAZUNqcJ0miMbGkey'
+        driver = chrome_driver()
+
+        driver.get("https://kinrayweblink.cardinalhealth.com/login")
+        current_handle = driver.current_window_handle
+        for handle in driver.window_handles:
+            if handle != current_handle:
+                driver.switch_to.window(handle)
+                driver.close()
+
+        driver.switch_to.window(current_handle)
+
+        input_username = WebDriverWait(driver, 50).until(
+            EC.presence_of_element_located((By.ID, "okta-signin-username"))
+        )
+        print("login() -> loginName found ")
+        input_password = WebDriverWait(driver, 50).until(
+            EC.presence_of_element_located((By.ID, "okta-signin-password"))
+        )
+        print("login() -> password found ")
+
+        input_username.send_keys(email)
+        input_password.send_keys(password, Keys.ENTER)
+
+        while True:
+            if driver.current_url == "https://kinrayweblink.cardinalhealth.com/home":
+                break
+            else:
+                time.sleep(1)
+
+
+        browser_log = driver.get_log('performance')
+        access_token = ''
+        x_api_key = ''
+        for entry in browser_log:
+            try:
+                json_request = json.loads(entry["message"])
+                access_token = json_request['message']['params']['headers']['access-token']
+                x_api_key = json_request['message']['params']['headers']['x-api-key']
+                if access_token and x_api_key:
+                    break
+            except:
+                pass
+
+        driver.quit()
+
+        print("access_token : ",access_token)
+        print("x_api_key : ",x_api_key)
+        # access_token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW5kYWRpckBhb2wuY29tIiwibG9naW4iOiJTYW5kYWRpckBhb2wuY29tIiwiZW1haWxJZCI6IlNhbmRhZGlyQGFvbC5jb20iLCJleHBpcmVkQXQiOjE2NTIyMjcyNDYyNTQsIm9rdGFJZCI6IjAwdWo3bWN0Y2tOcENtZWV4MXQ3IiwiZXhwIjoxNjUyMjI3MjQ2MjU0LCJidUlkIjozLCJ1c2VyVHlwZSI6ODAzLCJ1c2VyRGV0YWlsTnVtIjo0NjQ1OH0.VcN7PlnjRQb0pH2bNzQXdMCEh6wl2eLo1ZFaOMw5oXU'
+        # x_api_key = 'Ggcj9yiWoNY2AWzWAZUNqcJ0miMbGkey'
 
         session.headers.update({'Accept': 'application/json'})
         session.headers.update({'Content-Type': 'application/json'})
+        session.headers.update({'Pragma': 'no-cache'})
+        session.headers.update({'Origin': 'https://kinrayweblink.cardinalhealth.com'})
+        session.headers.update({'Referer': 'https://kinrayweblink.cardinalhealth.com/'})
         session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36'})
         session.headers.update({'access-token': access_token})
         session.headers.update({'x-api-key': x_api_key})
 
-    response = session.get("https://api.cardinalhealth.com/pharmcon/kinray-exp/user/detail")
+    response = session.get("https://api.cardinalhealth.com/pharmcon/kinray-exp/user/detail", timeout=10)
     json_data = response.json()
     account_num = json_data["accounts"][0]["accountNum"]
     print("account_num : ",account_num)
 
 
-
+index = 1
 def get_data_from_sku(args):
     global session
     global account_num
+    global index
 
     search_sku = args[0]
 
-    url = "https://api.cardinalhealth.com/pharmcon/kinray-exp/kinray/search/v1/products"
-
     list_sku = []
+
+    url = "https://api.cardinalhealth.com/pharmcon/kinray-exp/kinray/search/v1/products"
 
     payload = json.dumps({
         "searchKeyword": search_sku,
@@ -227,30 +233,70 @@ def get_data_from_sku(args):
         "rbcFlag": False
     })
 
-    response = session.post(url, data=payload)
-    json_data = response.json()
+    retry = 0
 
-    item = json_data["itemList"][0]
-    print("item : ", item["itemId"])
-    list_sku.append([item["packQuantity"],item["size"],item["itemId"],item["description"],item["manufacturer"],item["acquisitionPrice"],item["upc"],item["retailPrice"],item["invoicePrice"],item["estimatedNetPrice"],"",item["medispanAWP"]])
+    while True:
+        try:
+            response = session.post(url, data=payload, timeout=20)
+            json_data = response.json()
+
+            if "itemList" in json_data:
+                item = json_data["itemList"][0]
+
+                print(index," -- item : ",item.get("itemId",""))
+                index += 1
+                list_sku.append([item.get("packQuantity",""),item.get("size",""),item.get("itemId",""),item.get("description",""),item.get("manufacturer",""),item.get("acquisitionPrice",""),
+                                 f"'{item.get('upc','')}'",item.get("retailPrice",""),item.get("invoicePrice",""),item.get("estimatedNetPrice",""),"",item.get("medispanAWP","")])
+                break
+            else:
+
+                print(index, " --- ",retry," -- Exception    ------ : ",search_sku, " ----- ", json_data )
+                try:
+                    error_code = json_data["faultInfos"][0]["faultCode"]
+                except:
+                    error_code = ""
+
+                if retry < max_retry and error_code != "PRD123":
+                    time.sleep(1)
+                    retry += 1
+                else:
+                    index += 1
+                    list_sku.append(["","",search_sku,"","","","","","","","",""])
+                    break
+
+        except Exception as e:
+            print(index, " --- ",retry," -- Exception ------- : ",search_sku, " ------- ", e)
+            if retry < max_retry:
+                time.sleep(1)
+                retry += 1
+            else:
+                print(index," -- item : ",search_sku)
+                index += 1
+                list_sku.append(["","",search_sku,"","","","","","","","",""])
+                break
 
     write_output(data=list_sku)
 
 
+
+
 def start():
+    global is_header
 
     while True:
-
+        is_header = True
         login_session()
 
         df = pd.read_csv(input_file_name)
 
+        print("len : ", len(df['SKU']))
+        i = 1
         with futures.ThreadPoolExecutor(thread_pool) as executor:
             for id in df['SKU']:
                 executor.submit(get_data_from_sku, [id])
+                i += 1
                 # break
 
-        # print(f"Sending Mail to {receiver_address}")
         send_mail(sender_address, receiver_address, 'Data Scrapped for the SKUs ', 'The scrapped data is in the attached Excel file.', result_file_name)
 
         print("Waiting for 3 Hours to start Scrapping again")

@@ -49,7 +49,7 @@ def write_output(data):
     """
     global is_header
 
-    header = ["Qty","Size","Item#","Description","MFG","WAC/Source","NDC/UPC","Retail Price","Invoice","Est. Net","Deal Details","AWP"]
+    header = ["Qty","availableQty","Size","Item#","Description","MFG","WAC/Source","NDC/UPC","Retail Price","Invoice","Est. Net","Deal Details","AWP"]
 
     with open(result_file_name, mode='a', encoding="utf-8", newline='') as output_file:
         writer = csv.writer(output_file, delimiter=',',
@@ -245,7 +245,7 @@ def get_data_from_sku(args):
 
                 print(index," -- item : ",item.get("itemId",""))
                 index += 1
-                list_sku.append([item.get("packQuantity",""),item.get("size",""),item.get("itemId",""),item.get("description",""),item.get("manufacturer",""),item.get("acquisitionPrice",""),
+                list_sku.append([item.get("packQuantity",""),item.get("availableQty",""),item.get("size",""),item.get("itemId",""),item.get("description",""),item.get("manufacturer",""),item.get("acquisitionPrice",""),
                                  f"'{item.get('upc','')}'",item.get("retailPrice",""),item.get("invoicePrice",""),item.get("estimatedNetPrice",""),"",item.get("medispanAWP","")])
                 break
             else:

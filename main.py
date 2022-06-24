@@ -261,7 +261,7 @@ def get_data_from_sku(args):
                     retry += 1
                 else:
                     index += 1
-                    list_sku.append(["","",search_sku,"","","","","","","","",""])
+                    list_sku.append(["","","",search_sku,"","","","","","","","",""])
                     break
 
         except Exception as e:
@@ -272,7 +272,7 @@ def get_data_from_sku(args):
             else:
                 print(index," -- item : ",search_sku)
                 index += 1
-                list_sku.append(["","",search_sku,"","","","","","","","",""])
+                list_sku.append(["","","",search_sku,"","","","","","","","",""])
                 break
 
     write_output(data=list_sku)
